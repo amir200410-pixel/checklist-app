@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>מנהל המשימות שלי</title>
+    <script>
+        // Redirect to welcome page
+        window.location.href = 'welcome.html';
+    </script>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Simple checklist app for creating and sharing tasks">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Checklist">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-tasks"></i> מנהל המשימות שלי</h1>
+            <div class="header-actions">
+                <button id="shareBtn" class="btn btn-secondary">
+                    <i class="fas fa-share"></i> שתף
+                </button>
+                <button id="clearBtn" class="btn btn-danger">
+                    <i class="fas fa-trash"></i> מחק הכל
+                </button>
+                <button id="logoutBtn" class="btn btn-danger">
+                    <i class="fas fa-sign-out-alt"></i> התנתק
+                </button>
+            </div>
+        </header>
+
+        <main class="main">
+            <div class="add-item-section">
+                <div class="input-group">
+                    <input type="text" id="newItem" placeholder="מה אתה צריך לעשות?" class="input">
+                    <button id="addBtn" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> הוסף
+                    </button>
+                </div>
+            </div>
+
+            <div class="checklist-container">
+                <div id="checklist" class="checklist">
+                    <!-- Checklist items will be added here -->
+                </div>
+                
+                <div id="emptyState" class="empty-state">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>אין פריטים עדיין</h3>
+                    <p>הוסף את הפריט הראשון שלך למעלה כדי להתחיל!</p>
+                </div>
+            </div>
+
+            <div class="stats">
+                <div class="stat">
+                    <span id="totalItems">0</span>
+                    <label>סה"כ פריטים</label>
+                </div>
+                <div class="stat">
+                    <span id="completedItems">0</span>
+                    <label>הושלמו</label>
+                </div>
+                <div class="stat">
+                    <span id="progressPercent">0%</span>
+                    <label>התקדמות</label>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <button id="changePasswordBtn" class="btn btn-secondary">
+                    <i class="fas fa-key"></i> שנה סיסמה
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="passwordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>שנה סיסמה</h3>
+                <button id="closePasswordModal" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="currentPassword">סיסמה נוכחית:</label>
+                    <input type="password" id="currentPassword" class="input" placeholder="הכנס סיסמה נוכחית">
+                </div>
+                <div class="input-group">
+                    <label for="newPassword">סיסמה חדשה:</label>
+                    <input type="password" id="newPassword" class="input" placeholder="הכנס סיסמה חדשה">
+                </div>
+                <div class="input-group">
+                    <label for="confirmPassword">אימות סיסמה:</label>
+                    <input type="password" id="confirmPassword" class="input" placeholder="הכנס סיסמה חדשה שוב">
+                </div>
+                <div class="modal-actions">
+                    <button id="savePasswordBtn" class="btn btn-primary">
+                        <i class="fas fa-save"></i> שמור סיסמה
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div id="shareModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>שתף רשימת משימות</h3>
+                <button id="closeModal" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>שתף את רשימת המשימות הזו עם אחרים על ידי העתקת הקישור למטה:</p>
+                <div class="share-link-container">
+                    <input type="text" id="shareLink" readonly class="share-link-input">
+                    <button id="copyLink" class="btn btn-primary">
+                        <i class="fas fa-copy"></i> העתק
+                    </button>
+                </div>
+                <div class="share-options">
+                    <button id="shareWhatsApp" class="btn btn-whatsapp">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    <button id="shareEmail" class="btn btn-email">
+                        <i class="fas fa-envelope"></i> Email
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html> 

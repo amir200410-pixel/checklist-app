@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generate Icons</title>
+</head>
+<body>
+    <h1>Icon Generator</h1>
+    <p>This page will generate PNG icons for the PWA. Open the browser console to see the generated data URLs.</p>
+    
+    <canvas id="canvas" style="display: none;"></canvas>
+    
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // Load the SVG
+        const img = new Image();
+        img.onload = function() {
+            sizes.forEach(size => {
+                canvas.width = size;
+                canvas.height = size;
+                ctx.drawImage(img, 0, 0, size, size);
+                
+                const dataUrl = canvas.toDataURL('image/png');
+                console.log(`${size}x${size}:`, dataUrl);
+                
+                // Create download link
+                const link = document.createElement('a');
+                link.download = `icon-${size}x${size}.png`;
+                link.href = dataUrl;
+                link.click();
+            });
+        };
+        
+        img.src = 'icons/icon.svg';
+    </script>
+</body>
+</html> 

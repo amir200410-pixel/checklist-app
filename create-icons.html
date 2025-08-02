@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>יצירת אייקונים</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .icon-preview { margin: 10px; display: inline-block; }
+        canvas { border: 1px solid #ccc; }
+    </style>
+</head>
+<body>
+    <h1>יצירת אייקונים לאפליקציה</h1>
+    <p>לחץ על הכפתור למטה כדי ליצור את כל האייקונים הנדרשים:</p>
+    
+    <button onclick="generateAllIcons()" style="padding: 15px 30px; font-size: 18px; background: #ff6b6b; color: white; border: none; border-radius: 10px; cursor: pointer;">
+        יצור אייקונים
+    </button>
+    
+    <div id="results"></div>
+    
+    <script>
+        const sizes = [72, 96, 128, 144, 152, 192, 384, 512];
+        
+        function generateAllIcons() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<h2>יוצרים אייקונים...</h2>';
+            
+            sizes.forEach(size => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+                
+                // יצירת אייקון פשוט
+                createSimpleIcon(ctx, size);
+                
+                // הורדת הקובץ
+                const link = document.createElement('a');
+                link.download = `icon-${size}x${size}.png`;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                // הצגת תצוגה מקדימה
+                const preview = document.createElement('div');
+                preview.className = 'icon-preview';
+                preview.innerHTML = `
+                    <h3>${size}x${size}</h3>
+                    <canvas width="${size/2}" height="${size/2}" style="border: 1px solid #ccc;"></canvas>
+                `;
+                const previewCtx = preview.querySelector('canvas').getContext('2d');
+                createSimpleIcon(previewCtx, size/2);
+                results.appendChild(preview);
+            });
+            
+            results.innerHTML += '<h3>✅ כל האייקונים נוצרו בהצלחה!</h3>';
+        }
+        
+        function createSimpleIcon(ctx, size) {
+            // רקע
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#ff6b6b');
+            gradient.addColorStop(1, '#ee5a52');
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // עיגול לבן
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+            ctx.beginPath();
+            ctx.arc(size * 0.5, size * 0.4, size * 0.25, 0, 2 * Math.PI);
+            ctx.fill();
+            
+            // קווים של רשימה
+            ctx.strokeStyle = '#ff6b6b';
+            ctx.lineWidth = size * 0.02;
+            ctx.lineCap = 'round';
+            
+            // קו ראשון
+            ctx.beginPath();
+            ctx.moveTo(size * 0.3, size * 0.5);
+            ctx.lineTo(size * 0.7, size * 0.5);
+            ctx.stroke();
+            
+            // קו שני
+            ctx.beginPath();
+            ctx.moveTo(size * 0.3, size * 0.6);
+            ctx.lineTo(size * 0.7, size * 0.6);
+            ctx.stroke();
+            
+            // קו שלישי
+            ctx.beginPath();
+            ctx.moveTo(size * 0.3, size * 0.7);
+            ctx.lineTo(size * 0.6, size * 0.7);
+            ctx.stroke();
+            
+            // צ'קמרקס
+            ctx.strokeStyle = '#68d391';
+            ctx.lineWidth = size * 0.03;
+            
+            // צ'קמרק ראשון
+            ctx.beginPath();
+            ctx.moveTo(size * 0.75, size * 0.45);
+            ctx.lineTo(size * 0.8, size * 0.5);
+            ctx.lineTo(size * 0.85, size * 0.45);
+            ctx.stroke();
+            
+            // צ'קמרק שני
+            ctx.beginPath();
+            ctx.moveTo(size * 0.75, size * 0.55);
+            ctx.lineTo(size * 0.8, size * 0.6);
+            ctx.lineTo(size * 0.85, size * 0.55);
+            ctx.stroke();
+        }
+    </script>
+</body>
+</html> 

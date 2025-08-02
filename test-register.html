@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>בדיקת הרשמה - מנהל המשימות</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            direction: rtl;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+        }
+        .error {
+            background: #f8d7da;
+            border-left-color: #dc3545;
+            color: #721c24;
+        }
+        .success {
+            background: #d4edda;
+            border-left-color: #28a745;
+            color: #155724;
+        }
+        .debug {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 בדיקת הרשמה</h1>
+        
+        <form id="testForm">
+            <div class="form-group">
+                <label for="username">שם משתמש:</label>
+                <input type="text" id="username" required minlength="3">
+            </div>
+            
+            <div class="form-group">
+                <label for="fullName">שם מלא:</label>
+                <input type="text" id="fullName" required minlength="2">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">אימייל (אופציונלי):</label>
+                <input type="email" id="email">
+            </div>
+            
+            <div class="form-group">
+                <label for="password">סיסמה:</label>
+                <input type="password" id="password" required minlength="4">
+            </div>
+            
+            <div class="form-group">
+                <label for="confirmPassword">אימות סיסמה:</label>
+                <input type="password" id="confirmPassword" required>
+            </div>
+            
+            <button type="submit" class="btn">צור חשבון מנהל</button>
+        </form>
+        
+        <div id="status" class="status" style="display: none;"></div>
+        
+        <div class="debug">
+            <h3>מידע דיבאג:</h3>
+            <div id="debugInfo"></div>
+        </div>
+    </div>
+
+    <script>
+        function showStatus(message, type = 'success') {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = `status ${type}`;
+            status.style.display = 'block';
+        }
+
+        function updateDebugInfo() {
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            const debugInfo = document.getElementById('debugInfo');
+            debugInfo.innerHTML = `
+                <p><strong>משתמשים במערכת:</strong> ${users.length}</p>
+                <p><strong>מנהלים:</strong> ${users.filter(u => u.role === 'manager').length}</p>
+                <p><strong>עובדים:</strong> ${users.filter(u => u.role === 'worker').length}</p>
+                <p><strong>פרטי משתמשים:</strong></p>
+                <pre>${JSON.stringify(users, null, 2)}</pre>
+            `;
+        }
+
+        document.getElementById('testForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // בדיקות validation
+            if (username.length < 3) {
+                showStatus('שם משתמש חייב להיות לפחות 3 תווים!', 'error');
+                return;
+            }
+
+            if (fullName.length < 2) {
+                showStatus('שם מלא חייב להיות לפחות 2 תווים!', 'error');
+                return;
+            }
+
+            if (password.length < 4) {
+                showStatus('סיסמה חייבת להיות לפחות 4 תווים!', 'error');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showStatus('הסיסמאות לא תואמות!', 'error');
+                return;
+            }
+
+            // בדיקה אם שם המשתמש כבר קיים
+            const users = JSON.parse(localStorage.getItem('appUsers') || '[]');
+            if (users.find(user => user.username === username)) {
+                showStatus('שם משתמש זה כבר קיים במערכת!', 'error');
+                return;
+            }
+
+            // יצירת משתמש חדש
+            const newUser = {
+                username: username,
+                password: password,
+                fullName: fullName,
+                email: email,
+                role: 'manager',
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                // שמירת המשתמש
+                users.push(newUser);
+                localStorage.setItem('appUsers', JSON.stringify(users));
+                
+                showStatus('המשתמש נרשם בהצלחה!', 'success');
+                
+                // עדכון מידע דיבאג
+                updateDebugInfo();
+                
+                // הפניה לדשבורד המנהל
+                setTimeout(() => {
+                    sessionStorage.setItem('isLoggedIn', 'true');
+                    sessionStorage.setItem('loginTime', Date.now().toString());
+                    sessionStorage.setItem('username', username);
+                    sessionStorage.setItem('userRole', 'manager');
+                    
+                    window.location.href = 'manager-dashboard.html';
+                }, 2000);
+                
+            } catch (error) {
+                showStatus(`שגיאה בשמירת המשתמש: ${error.message}`, 'error');
+                console.error('Error saving user:', error);
+            }
+        });
+
+        // עדכון מידע דיבאג בטעינת הדף
+        updateDebugInfo();
+    </script>
+</body>
+</html> 

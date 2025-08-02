@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>הרשמה - מנהל המשימות</title>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="description" content="Simple checklist app for creating and sharing tasks">
+    <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Checklist">
+    <meta name="mobile-web-app-capable" content="yes">
+    
+    <!-- PWA Icons -->
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link rel="manifest" href="manifest.json">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="register-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* Enhanced register form styles */
+        .register-form {
+            margin-top: 30px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+        }
+        
+        .input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid #e1e5e9;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+            color: #333;
+            box-sizing: border-box;
+        }
+        
+        .input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .input::placeholder {
+            color: #999;
+            font-style: italic;
+        }
+        
+        .password-input-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-password:hover {
+            color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .password-input-container .input {
+            padding-right: 20px;
+            padding-left: 50px;
+        }
+        
+        .register-btn {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 12px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .register-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .register-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .register-footer {
+            margin-top: 30px;
+            text-align: center;
+        }
+        
+        .register-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        
+        .register-footer a:hover {
+            color: #5a6fd8;
+            text-decoration: underline;
+        }
+        
+        .note {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 10px;
+            font-style: italic;
+        }
+        
+        /* Enhanced header */
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .register-header i {
+            font-size: 4rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .register-header h1 {
+            font-size: 2.5rem;
+            color: #333;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        .register-header p {
+            font-size: 1.1rem;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        /* Password strength indicator */
+        .password-strength {
+            margin-top: 8px;
+            font-size: 0.85rem;
+        }
+        
+        .strength-weak {
+            color: #dc3545;
+        }
+        
+        .strength-medium {
+            color: #ffc107;
+        }
+        
+        .strength-strong {
+            color: #28a745;
+        }
+        
+        /* Error states */
+        .input.error {
+            border-color: #dc3545;
+            background: #fff5f5;
+        }
+        
+        .input.error:focus {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-card">
+            <div class="register-header">
+                <i class="fas fa-user-plus"></i>
+                <h1>הרשמה למערכת</h1>
+                <p>צור חשבון מנהל חדש כדי להתחיל</p>
+            </div>
+            
+            <form id="registerForm" class="register-form">
+                <div class="input-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i>
+                        שם משתמש
+                    </label>
+                    <input 
+                        type="text" 
+                        id="username" 
+                        class="input" 
+                        placeholder="בחר שם משתמש ייחודי"
+                        required
+                        autocomplete="username"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <label for="businessName">
+                        <i class="fas fa-building"></i>
+                        שם העסק
+                    </label>
+                    <input 
+                        type="text" 
+                        id="businessName" 
+                        class="input" 
+                        placeholder="הכנס את שם העסק שלך"
+                        required
+                        autocomplete="organization"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <label for="fullName">
+                        <i class="fas fa-id-card"></i>
+                        שם מלא
+                    </label>
+                    <input 
+                        type="text" 
+                        id="fullName" 
+                        class="input" 
+                        placeholder="הכנס את השם המלא שלך"
+                        required
+                        autocomplete="name"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <label for="email">
+                        <i class="fas fa-envelope"></i>
+                        אימייל (אופציונלי)
+                    </label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        class="input" 
+                        placeholder="הכנס כתובת אימייל"
+                        autocomplete="email"
+                    >
+                </div>
+                
+                <div class="input-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        סיסמה
+                    </label>
+                    <div class="password-input-container">
+                        <input 
+                            type="password" 
+                            id="password" 
+                            class="input" 
+                            placeholder="בחר סיסמה חזקה"
+                            required
+                            autocomplete="new-password"
+                        >
+                        <button type="button" id="togglePassword" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div id="passwordStrength" class="password-strength"></div>
+                </div>
+                
+                <div class="input-group">
+                    <label for="confirmPassword">
+                        <i class="fas fa-lock"></i>
+                        אימות סיסמה
+                    </label>
+                    <div class="password-input-container">
+                        <input 
+                            type="password" 
+                            id="confirmPassword" 
+                            class="input" 
+                            placeholder="הכנס שוב את הסיסמה"
+                            required
+                            autocomplete="new-password"
+                        >
+                        <button type="button" id="toggleConfirmPassword" class="toggle-password">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary register-btn">
+                    <i class="fas fa-user-plus"></i>
+                    צור חשבון
+                </button>
+            </form>
+            
+            <div class="register-footer">
+                <p>יש לך כבר חשבון? <a href="login.html"><i class="fas fa-sign-in-alt"></i> התחבר כאן</a></p>
+                <p><a href="welcome.html"><i class="fas fa-arrow-right"></i> חזור לדף הבית</a></p>
+                <p class="note">הנתונים נשמרים במכשיר שלך בלבד</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="shared-storage.js"></script>
+    <script src="register.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html> 

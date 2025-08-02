@@ -1,0 +1,44 @@
+{
+  "name": "task-manager-app",
+  "version": "1.0.0",
+  "description": "מערכת ניהול משימות מתקדמת עם תמיכה מלאה בעברית",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 server.py",
+    "dev": "python3 server.py",
+    "build": "echo 'No build step required for static files'",
+    "test": "echo 'No tests specified'",
+    "lint": "echo 'No linting configured'",
+    "deploy": "echo 'Deploy to your preferred hosting service'"
+  },
+  "keywords": [
+    "task-management",
+    "checklist",
+    "hebrew",
+    "pwa",
+    "productivity",
+    "web-app"
+  ],
+  "author": "Checklist App Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/task-manager-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/task-manager-app/issues"
+  },
+  "homepage": "https://yourdomain.com",
+  "engines": {
+    "node": ">=14.0.0",
+    "npm": ">=6.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "devDependencies": {},
+  "dependencies": {}
+} 

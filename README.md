@@ -21,7 +21,7 @@
 - **ארגון גדול**: פנה לקבלת הצעת מחיר מותאמת
 
 ### 📞 יצירת קשר לרישוי:
-- **אימייל**: [YOUR_EMAIL]
+- **אימייל**: amir200410@gmail.com
 - **טלפון**: [YOUR_PHONE]
 - **אתר**: [YOUR_WEBSITE]
 

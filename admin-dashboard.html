@@ -473,6 +473,19 @@
     </div>
 
     <script src="shared-storage.js"></script>
+    <script src="access-control.js"></script>
     <script src="admin-dashboard.js"></script>
+    
+    <script>
+        // בדיקת הרשאות לפני טעינת הדף
+        document.addEventListener('DOMContentLoaded', function() {
+            const isAuthenticated = sessionStorage.getItem('accessAuthenticated');
+            if (isAuthenticated !== 'true') {
+                // אם לא מאומת, הצג מסך כניסה
+                const accessControl = new AccessControl();
+                accessControl.showAccessScreen();
+            }
+        });
+    </script>
 </body>
 </html> 

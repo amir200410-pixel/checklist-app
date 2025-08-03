@@ -73,21 +73,40 @@ window.showWelcomeMessage = function() {
     console.log('ברוכים הבאים למערכת ניהול המשימות');
 };
 
-// פונקציה לכפתור חזור
+// פונקציה לכפתור חזור משופרת
 window.goBack = function() {
-    if (document.referrer && document.referrer !== window.location.href) {
+    // בדוק אם יש היסטוריה
+    if (window.history.length > 1) {
         window.history.back();
     } else {
-        window.location.href = 'welcome.html';
+        // אם אין היסטוריה, חזור לדף הבית
+        window.location.href = 'index.html';
     }
 };
 
-// הצגת כפתור חזור אם יש היסטוריה
+// פונקציה לפתיחת פאנל מנהל מערכת
+window.openAdminPanel = function() {
+    // בדוק אם המשתמש מאומת
+    const isAuthenticated = sessionStorage.getItem('accessAuthenticated');
+    if (isAuthenticated === 'true') {
+        // אם מאומת, עבור ישירות לפאנל
+        window.location.href = 'admin-dashboard.html';
+    } else {
+        // אם לא מאומת, הצג מסך כניסה
+        const accessControl = new AccessControl();
+        accessControl.showAccessScreen();
+    }
+};
+
+// הצגת כפתור חזור משופרת
 window.addEventListener('load', function() {
     const backButton = document.querySelector('.back-button');
     if (backButton) {
-        if (document.referrer && document.referrer !== window.location.href) {
+        // הצג כפתור חזור אם יש היסטוריה או אם הגענו מדף אחר
+        if (window.history.length > 1 || (document.referrer && document.referrer !== window.location.href)) {
             backButton.style.display = 'flex';
+            // הוסף אנימציה לכפתור
+            backButton.style.animation = 'buttonSlideIn 0.8s ease-out forwards';
         }
     }
 });

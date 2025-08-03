@@ -51,7 +51,15 @@ body::before {
     text-align: center;
     position: relative;
     overflow: hidden;
-    animation: cardFloat 8s ease-in-out infinite;
+    animation: cardFloat 8s ease-in-out infinite, cardGlow 3s ease-in-out infinite;
+    transform: translateY(20px);
+    opacity: 0;
+    animation-fill-mode: forwards;
+}
+
+@keyframes cardGlow {
+    0%, 100% { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2); }
+    50% { box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 30px rgba(102, 126, 234, 0.3); }
 }
 
 @keyframes cardFloat {
@@ -140,6 +148,17 @@ body::before {
     overflow: hidden;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     letter-spacing: 0.5px;
+    transform: translateY(30px);
+    opacity: 0;
+    animation: buttonSlideIn 0.8s ease-out forwards;
+    animation-delay: calc(var(--btn-index, 0) * 0.2s);
+}
+
+@keyframes buttonSlideIn {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
 }
 
 .btn::before {
@@ -209,6 +228,20 @@ body::before {
     text-align: center;
     transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     border: 2px solid rgba(255, 255, 255, 0.5);
+    transform: translateX(-50px);
+    opacity: 0;
+    animation: infoSlideIn 1s ease-out forwards;
+    animation-delay: calc(var(--info-index, 0) * 0.3s);
+}
+
+@keyframes infoSlideIn {
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.info-item {
     position: relative;
     overflow: hidden;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
